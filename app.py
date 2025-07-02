@@ -318,48 +318,48 @@ with gr.Blocks(title="MCP Agent Chat", theme=gr.themes.Soft()) as demo:
             
             init_btn = gr.Button("Initialize Agent", variant="primary", size="lg")
             init_status = gr.Textbox(label="Status", interactive=False, max_lines=3)
-        
-        # Main chat area
-        chat_column = gr.Column(scale=2)
-        with chat_column:
-            with gr.Row():
-                gr.Markdown("## 💬 Chat with your MCP Agent")
-                config_status = gr.Markdown("", visible=False)  # Status when sidebar is collapsed
-            
-            chat_interface = gr.Column(visible=False)
-            with chat_interface:
-                chatbot = gr.Chatbot(
-                    label="Conversation",
-                    height=500,
-                    show_copy_button=True,
-                    avatar_images=("👤", "🤖")
-                )
-                
-                with gr.Row():
-                    msg = gr.Textbox(
-                        label="Message",
-                        placeholder="Type your message here...",
-                        scale=4,
-                        lines=2
-                    )
-                    send_btn = gr.Button("Send", variant="primary", scale=1)
-                
-                error_display = gr.Textbox(
-                    label="Error Messages",
-                    visible=False,
-                    interactive=False
-                )
-                
-                with gr.Row():
-                    reset_btn = gr.Button("Reset Conversation", variant="secondary")
-                    disconnect_btn = gr.Button("Disconnect Agent", variant="secondary")
-            
-            # Placeholder when agent is not initialized
-            placeholder = gr.Markdown(
-                "### 👋 Welcome!\n\nPlease configure and initialize your MCP Agent using the sidebar to start chatting.",
-                visible=True
-            )
     
+    # Main chat area
+    chat_column = gr.Column(scale=2)
+    with chat_column:
+        with gr.Row():
+            gr.Markdown("## 💬 Chat with your MCP Agent")
+            config_status = gr.Markdown("", visible=False)  # Status when sidebar is collapsed
+        
+        chat_interface = gr.Column(visible=False)
+        with chat_interface:
+            chatbot = gr.Chatbot(
+                label="Conversation",
+                height=500,
+                show_copy_button=True,
+                avatar_images=("👤", "🤖")
+            )
+            
+            with gr.Row():
+                msg = gr.Textbox(
+                    label="Message",
+                    placeholder="Type your message here...",
+                    scale=4,
+                    lines=2
+                )
+                send_btn = gr.Button("Send", variant="primary", scale=1)
+            
+            error_display = gr.Textbox(
+                label="Error Messages",
+                visible=False,
+                interactive=False
+            )
+            
+            with gr.Row():
+                reset_btn = gr.Button("Reset Conversation", variant="secondary")
+                disconnect_btn = gr.Button("Disconnect Agent", variant="secondary")
+        
+        # Placeholder when agent is not initialized
+        placeholder = gr.Markdown(
+            "### 👋 Welcome!\n\nPlease configure and initialize your MCP Agent using the sidebar to start chatting.",
+            visible=True
+        )
+
     
     # Server management event handlers
     add_server_btn.click(
@@ -428,7 +428,7 @@ with gr.Blocks(title="MCP Agent Chat", theme=gr.themes.Soft()) as demo:
 
 if __name__ == "__main__":
     demo.launch(
-        server_name="0.0.0.0",
+        server_name="127.0.0.1",
         server_port=7860,
         share=False,
         show_error=True
