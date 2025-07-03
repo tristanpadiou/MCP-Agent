@@ -35,14 +35,14 @@ class GradioMCPApp:
                     server_url = server_configs[i]
                     server_name = server_configs[i + 1]
                     server_type = server_configs[i + 2]
-                    bearer_token = server_configs[i + 3]
+                    headers = server_configs[i + 3]
                     
                     if server_url and server_url.strip():
                         server_config = {
                             'url': server_url.strip(),
                             'name': server_name.strip() if server_name and server_name.strip() else f'server_{i//4 + 1}',
                             'type': server_type if server_type else 'http',
-                            'bearer_token': bearer_token.strip() if bearer_token and bearer_token.strip() else None
+                            'headers': headers.strip() if headers and headers.strip() else None
                         }
                         mcp_servers.append(server_config)
             
@@ -229,89 +229,107 @@ with gr.Blocks(title="MCP Agent Chat", theme=gr.themes.Soft()) as demo:
             # Initial server configuration
             with servers_container:
                 # Server 1 (always present)
-                with gr.Group():
-                    gr.Markdown("#### Server 1")
-                    server1_url = gr.Textbox(
-                        label="Server URL",
-                        placeholder="http://localhost:8000",
-                        info="The URL of your MCP server"
-                    )
-                    server1_name = gr.Textbox(
-                        label="Server Name",
-                        placeholder="server_1",
-                        info="A friendly name for your MCP server"
-                    )
-                    server1_type = gr.Dropdown(
-                        label="Server Type",
-                        choices=["http", "SSE"],
-                        value="http",
-                        info="The type of MCP server connection"
-                    )
-                    server1_token = gr.Textbox(
-                        label="Bearer Token (Optional)",
-                        type="password",
-                        placeholder="Leave empty if not required",
-                        info="Authentication token for the MCP server (if required)"
-                    )
-                
-                # Server 2 (optional)
-                server2_group = gr.Group(visible=False)
-                with server2_group:
-                    gr.Markdown("#### Server 2")
-                    server2_url = gr.Textbox(
-                        label="Server URL",
-                        placeholder="http://localhost:8001",
-                        info="The URL of your MCP server"
-                    )
-                    server2_name = gr.Textbox(
-                        label="Server Name",
-                        placeholder="server_2",
-                        info="A friendly name for your MCP server"
-                    )
-                    server2_type = gr.Dropdown(
-                        label="Server Type",
-                        choices=["http", "SSE"],
-                        value="http",
-                        info="The type of MCP server connection"
-                    )
-                    server2_token = gr.Textbox(
-                        label="Bearer Token (Optional)",
-                        type="password",
-                        placeholder="Leave empty if not required",
-                        info="Authentication token for the MCP server (if required)"
-                    )
-                
-                # Server 3 (optional)
-                server3_group = gr.Group(visible=False)
-                with server3_group:
-                    gr.Markdown("#### Server 3")
-                    server3_url = gr.Textbox(
-                        label="Server URL",
-                        placeholder="http://localhost:8002",
-                        info="The URL of your MCP server"
-                    )
-                    server3_name = gr.Textbox(
-                        label="Server Name",
-                        placeholder="server_3",
-                        info="A friendly name for your MCP server"
-                    )
-                    server3_type = gr.Dropdown(
-                        label="Server Type",
-                        choices=["http", "SSE"],
-                        value="http",
-                        info="The type of MCP server connection"
-                    )
-                    server3_token = gr.Textbox(
-                        label="Bearer Token (Optional)",
-                        type="password",
-                        placeholder="Leave empty if not required",
-                        info="Authentication token for the MCP server (if required)"
-                    )
-            
-            # Server management buttons
-            with gr.Row():
-                add_server_btn = gr.Button("+ Add Server", variant="secondary", size="sm")
-                remove_server_btn = gr.Button("- Remove Server", variant="secondary", size="sm", interactive=False)
+                with gr.Tab("Url based servers"):
+                    with gr.Group():
+                        gr.Markdown("#### Server 1")
+                        server1_url = gr.Textbox(
+                            label="Server URL",
+                            placeholder="http://localhost:8000",
+                            info="The URL of your MCP server"
+                        )
+                        server1_name = gr.Textbox(
+                            label="Server Name",
+                            placeholder="server_1",
+                            info="A friendly name for your MCP server"
+                        )
+                        server1_type = gr.Dropdown(
+                            label="Server Type",
+                            choices=["http", "SSE"],
+                            value="http",
+                            info="The type of MCP server connection"
+                        )
+                        server1_headers = gr.Textbox(
+                            label="Headers (Optional)",
+                            type="password",
+                            placeholder="Leave empty if not required",
+                            info="Headers for the MCP server (if required), example: {'Authorization': 'Bearer 1234567890'}"
+                        )
+                    
+                    # Server 2 (optional)
+                    server2_group = gr.Group(visible=False)
+                    with server2_group:
+                        gr.Markdown("#### Server 2")
+                        server2_url = gr.Textbox(
+                            label="Server URL",
+                            placeholder="http://localhost:8001",
+                            info="The URL of your MCP server"
+                        )
+                        server2_name = gr.Textbox(
+                            label="Server Name",
+                            placeholder="server_2",
+                            info="A friendly name for your MCP server"
+                        )
+                        server2_type = gr.Dropdown(
+                            label="Server Type",
+                            choices=["http", "SSE"],
+                            value="http",
+                            info="The type of MCP server connection"
+                        )
+                        server2_headers = gr.Textbox(
+                            label="Headers (Optional)",
+                            type="password",
+                            placeholder="Leave empty if not required",
+                            info="Headers for the MCP server (if required), example: {'Authorization': 'Bearer 1234567890'}"
+                        )
+                    
+                    # Server 3 (optional)
+                    server3_group = gr.Group(visible=False)
+                    with server3_group:
+                        gr.Markdown("#### Server 3")
+                        server3_url = gr.Textbox(
+                            label="Server URL",
+                            placeholder="http://localhost:8002",
+                            info="The URL of your MCP server"
+                        )
+                        server3_name = gr.Textbox(
+                            label="Server Name",
+                            placeholder="server_3",
+                            info="A friendly name for your MCP server"
+                        )
+                        server3_type = gr.Dropdown(
+                            label="Server Type",
+                            choices=["http", "SSE"],
+                            value="http",
+                            info="The type of MCP server connection"
+                        )
+                        server3_headers = gr.Textbox(
+                            label="Headers (Optional)",
+                            type="password",
+                            placeholder="Leave empty if not required",
+                            info="Headers for the MCP server (if required), example: {'Authorization': 'Bearer 1234567890'}"
+                        )
+                with gr.Tab("Stdio based servers"):
+                    with gr.Group():
+                        gr.Markdown("#### Server 1")
+                        server1_command = gr.Textbox(
+                            label="Command",
+                            placeholder="npx",
+                            info="The command to use to run the MCP server, docker, npm, python, etc."
+                        )
+                        server1_args = gr.Textbox(
+                            label="Arguments",
+                            placeholder="['-y', '@modelcontextprotocol/server-memory']",
+                            info="The arguments to use to run the MCP server"
+                        )
+                        server1_name = gr.Textbox(
+                            label="Server Name",
+                            placeholder="server_1",
+                            info="A friendly name for your MCP server"
+                        )
+                # Server management buttons
+                with gr.Row():
+                    add_server_btn = gr.Button("+ Add Server", variant="secondary", size="sm")
+                    remove_server_btn = gr.Button("- Remove Server", variant="secondary", size="sm", interactive=False)
             
             # Track current server count
             server_count_state = gr.State(1)
@@ -379,9 +397,10 @@ with gr.Blocks(title="MCP Agent Chat", theme=gr.themes.Soft()) as demo:
         fn=initialize_agent_wrapper,
         inputs=[
             openai_key,
-            server1_url, server1_name, server1_type, server1_token,
-            server2_url, server2_name, server2_type, server2_token,
-            server3_url, server3_name, server3_type, server3_token
+            server1_url, server1_name, server1_type, server1_headers,
+            server2_url, server2_name, server2_type, server2_headers,
+            server3_url, server3_name, server3_type, server3_headers,
+            server1_command, server1_args, server1_name
         ],
         outputs=[chat_interface, placeholder, init_status]
     )

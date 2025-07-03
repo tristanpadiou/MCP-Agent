@@ -36,7 +36,7 @@ class Message_state:
     
     
 class MCP_Agent:
-    def __init__(self, api_keys:dict, mpc_server_urls:list = []):
+    def __init__(self, api_keys:dict, mpc_server_urls:list = [], mpc_stdio_commands:list = []):
         """
         Args:
             
@@ -52,14 +52,23 @@ class MCP_Agent:
                   'headers': {'Authorization': 'Bearer', '1234567890'} #optional or None
                 }
               ]
+            mpc_stdio_commands (list): The list of commands to use with the stdio mpc server
+              example:
+              [
+                {
+                  'name': 'memory',
+                  'command': 'npx', 'docker', 'npm', 'python'
+                  'args': ['-y', '@modelcontextprotocol/server-memory'] 
+                }
+              ]
 
             
         """
-        GEMINI_MODEL='gemini-2.0-flash'
+        
         self.api_keys=Api_keys(api_keys=api_keys)
         
         self.mpc_server_urls = mpc_server_urls
-       
+        self.mpc_stdio_commands = mpc_stdio_commands
         # tools
         self.llms={'mcp_llm':OpenAIModel('gpt-4.1-mini',provider=OpenAIProvider(api_key=self.api_keys.api_keys['openai_api_key']))}
         
@@ -77,8 +86,9 @@ class MCP_Agent:
                     self.mpc_servers.append(MCPServerSSE(url=mpc_server_url['url'], headers=mpc_server_url['headers']))
                 else:
                     self.mpc_servers.append(MCPServerSSE(mpc_server_url['url']))
-                    
-        
+        for mpc_stdio_command in self.mpc_stdio_commands:
+            self.mpc_servers.append(MCPServerSSE(command=mpc_stdio_command['command'], args=mpc_stdio_command['args']))
+
         self._mcp_context_manager = None
         self._is_connected = False
         #agent
