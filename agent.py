@@ -4,7 +4,7 @@ from pydantic_ai import Agent, RunContext, format_as_xml
 
 from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
-from pydantic_ai.mcp import MCPServerStreamableHTTP, MCPServerSSE
+from pydantic_ai.mcp import MCPServerStreamableHTTP, MCPServerSSE, MCPServerStdio
 from dataclasses import dataclass
 from datetime import datetime
 from pydantic import Field
@@ -87,7 +87,7 @@ class MCP_Agent:
                 else:
                     self.mpc_servers.append(MCPServerSSE(mpc_server_url['url']))
         for mpc_stdio_command in self.mpc_stdio_commands:
-            self.mpc_servers.append(MCPServerSSE(command=mpc_stdio_command['command'], args=mpc_stdio_command['args']))
+            self.mpc_servers.append(MCPServerStdio(command=mpc_stdio_command['command'], args=mpc_stdio_command['args']))
 
         self._mcp_context_manager = None
         self._is_connected = False
