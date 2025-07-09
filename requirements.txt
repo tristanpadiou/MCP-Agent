@@ -1,4 +1,0 @@
-
-pydantic-ai==0.3.5
-
-gradio==5.35.0

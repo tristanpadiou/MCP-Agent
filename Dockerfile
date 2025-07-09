@@ -1,6 +1,15 @@
 # Use Python 3.13.2 slim image for efficiency
 FROM python:3.13.2-slim
 
+# Install system dependencies and uv
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+
 # Set working directory
 WORKDIR /app
 
@@ -8,21 +17,14 @@ WORKDIR /app
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
-# Install system dependencies if needed
-RUN apt-get update && apt-get install -y \
-    git \
-    && rm -rf /var/lib/apt/lists/*
+# Copy project configuration files first to leverage Docker layer caching
+COPY pyproject.toml uv.lock ./
 
-# Copy requirements first to leverage Docker layer caching
-COPY requirements.txt .
-
-# Install Python dependencies
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies using uv
+RUN uv sync --frozen --no-dev
 
 # Copy application files
-COPY src/mcp_agent/agent.py .
-COPY src/gradio_app/app.py .
+COPY src/ ./src/
 
 # Create directories that might be needed
 RUN mkdir -p notebooks
@@ -30,5 +32,5 @@ RUN mkdir -p notebooks
 # Expose the port that Gradio will run on
 EXPOSE 7860
 
-# Set the command to run the application
-CMD ["python", "src/gradio_app/app.py"] 
+# Use uv to run the application
+CMD ["uv", "run", "python", "src/gradio_app/app.py"] 
