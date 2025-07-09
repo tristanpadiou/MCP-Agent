@@ -12,11 +12,30 @@ A Model Context Protocol (MCP) agent with a Gradio frontend that enables real-ti
 
 ## Quick Start
 
+### Prerequisites
+
+Install [uv](https://docs.astral.sh/uv/) - the fast Python package manager:
+
+```bash
+# On macOS/Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# On Windows
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# Or via package managers
+# macOS: brew install uv
+# Linux: pip install uv
+```
+
 ### 1. Install Dependencies
 
 ```bash
-pip install -r requirements.txt
+# Install all dependencies using uv
+uv sync
 ```
+
+This will create a virtual environment and install all required packages.
 
 ### 2. Set Up Environment Variables
 
@@ -38,7 +57,8 @@ export OPENAI_API_KEY="your_openai_api_key_here"
 ### 3. Run the Gradio App
 
 ```bash
-python -m src.gradio_app.app
+# Run the app using uv
+uv run python src/gradio_app/app.py
 ```
 
 The app will open in your browser at `http://localhost:7860`
@@ -67,6 +87,44 @@ The agent supports connecting to MCP servers for extended functionality:
 3. Click "Add Server" to configure additional servers (up to 3)
 4. Initialize the agent to apply changes
 
+## Development
+
+### Adding Dependencies
+
+```bash
+# Add a new dependency
+uv add requests
+
+# Add a development dependency
+uv add --dev pytest
+
+# Remove a dependency
+uv remove requests
+```
+
+### Running Tests
+
+```bash
+# Run tests (if you have any)
+uv run pytest
+
+# Run with coverage
+uv run pytest --cov=src
+```
+
+### Code Formatting
+
+```bash
+# Format code with black
+uv run black src/
+
+# Check with flake8
+uv run flake8 src/
+
+# Type checking with mypy
+uv run mypy src/
+```
+
 ## Project Structure
 
 ```
@@ -81,10 +139,10 @@ MCP-Agent/
 │       └── agent.py        # Core MCP agent implementation
 ├── notebooks/
 │   └── test.ipynb          # Jupyter notebook for testing
-├── requirements.txt        # Python dependencies
-├── pyproject.toml         # Project configuration
-├── README.md              # This file
-└── DEPLOY.md              # Deployment instructions
+├── pyproject.toml         # Project configuration and dependencies
+├── uv.lock               # Lock file for reproducible builds
+├── README.md             # This file
+└── DEPLOY.md             # Deployment instructions
 ```
 
 ## API Usage
@@ -134,13 +192,17 @@ async def stream_example():
 - **openai**: OpenAI API client (included in pydantic-ai)
 - **pydantic**: Data validation and settings management
 
+All dependencies are managed by `uv` and specified in `pyproject.toml`.
+
 ## Contributing
 
 1. Fork the repository
 2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+3. Install dependencies: `uv sync`
+4. Make your changes
+5. Test thoroughly: `uv run pytest`
+6. Format code: `uv run black src/`
+7. Submit a pull request
 
 ## License
 
@@ -152,7 +214,8 @@ This project is open source. Please check the license file for details.
 
 1. **Agent won't initialize**: Check that your OpenAI API key is correctly set
 2. **MCP server connection fails**: Verify server URL and authentication details
-3. **Import errors**: Ensure you're running from the project root directory
+3. **Import errors**: Ensure you're running from the project root directory with `uv run`
+4. **Virtual environment issues**: Try `uv sync` to recreate the environment
 
 ### Environment Setup
 
@@ -160,6 +223,18 @@ For different environments, you can set the API key via:
 
 - **Environment variable**: `export OPENAI_API_KEY="your_key"`
 - **Direct configuration**: Enter the API key in the Gradio interface
+
+### Development Environment
+
+```bash
+# Activate the virtual environment manually (optional)
+source .venv/bin/activate  # On Unix/macOS
+# or
+.venv\Scripts\activate     # On Windows
+
+# Or always use uv run (recommended)
+uv run python script.py
+```
 
 ## Support
 
