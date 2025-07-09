@@ -1,13 +1,13 @@
 # MCP-Agent
 
-A Model Context Protocol (MCP) agent with a Streamlit frontend that enables real-time streaming conversations.
+A Model Context Protocol (MCP) agent with a Gradio frontend that enables real-time streaming conversations.
 
 ## Features
 
 - 🤖 **MCP-Enabled AI Agent**: Powered by pydantic-ai with MCP server integration
-- 💬 **Streaming Chat Interface**: Real-time response streaming in Streamlit
+- 💬 **Interactive Chat Interface**: Real-time response handling in Gradio
 - 🔧 **Configurable MCP Servers**: Support for HTTP and SSE MCP server connections
-- 🎛️ **Interactive UI**: Easy-to-use sidebar configuration and chat management
+- 🎛️ **Interactive UI**: Easy-to-use configuration and chat management
 - 📱 **Responsive Design**: Clean, modern chat interface
 
 ## Quick Start
@@ -35,20 +35,24 @@ Alternatively, you can set environment variables directly:
 export OPENAI_API_KEY="your_openai_api_key_here"
 ```
 
-### 3. Run the Streamlit App
+### 3. Run the Gradio App
 
 ```bash
-streamlit run streamlit_app.py
+python -m src.gradio_app.app
 ```
 
-The app will open in your browser at `http://localhost:8501`
+The app will open in your browser at `http://localhost:7860`
 
 ## How to Use
 
-1. **Initialize the Agent**: Click "🚀 Initialize Agent" in the sidebar
-2. **Start Chatting**: Type your message in the chat input at the bottom
-3. **Watch Responses Stream**: See real-time streaming responses from the AI
+1. **Initialize the Agent**: 
+   - Enter your OpenAI API key in the sidebar
+   - Optionally configure MCP servers
+   - Click "🚀 Initialize Agent"
+2. **Start Chatting**: Type your message in the chat input
+3. **View Responses**: See responses from the AI in the chat interface
 4. **Reset Chat**: Use "🔄 Reset Chat" to clear conversation history
+5. **Disconnect**: Use "🔌 Disconnect Agent" to disconnect from MCP servers
 
 ## MCP Server Configuration
 
@@ -57,19 +61,30 @@ The agent supports connecting to MCP servers for extended functionality:
 1. Use the sidebar "🌐 MCP Servers" section
 2. Add server details:
    - **Server URL**: e.g., `http://localhost:8000`
+   - **Server Name**: Custom name for the server
    - **Connection Type**: Choose between HTTP or SSE
-   - **Bearer Token**: Optional authentication token
-3. Reinitialize the agent to apply changes
+   - **Headers**: Optional authentication headers (e.g., `Authorization: Bearer token`)
+3. Click "Add Server" to configure additional servers (up to 3)
+4. Initialize the agent to apply changes
 
 ## Project Structure
 
 ```
 MCP-Agent/
-├── agent.py           # Core MCP agent implementation
-├── streamlit_app.py   # Streamlit chatbot frontend
-├── requirements.txt   # Python dependencies
-├── README.md         # This file
-└── test.ipynb        # Jupyter notebook for testing
+├── src/
+│   ├── __init__.py
+│   ├── gradio_app/
+│   │   ├── __init__.py
+│   │   └── app.py          # Gradio chatbot frontend
+│   └── mcp_agent/
+│       ├── __init__.py
+│       └── agent.py        # Core MCP agent implementation
+├── notebooks/
+│   └── test.ipynb          # Jupyter notebook for testing
+├── requirements.txt        # Python dependencies
+├── pyproject.toml         # Project configuration
+├── README.md              # This file
+└── DEPLOY.md              # Deployment instructions
 ```
 
 ## API Usage
@@ -78,7 +93,7 @@ You can also use the agent programmatically:
 
 ```python
 import asyncio
-from agent import MCP_Agent
+from src.mcp_agent.agent import MCP_Agent
 
 # Initialize agent
 api_keys = {"openai_api_key": "your_key_here"}
@@ -114,9 +129,9 @@ async def stream_example():
 
 ## Dependencies
 
-- **streamlit**: Web app framework
+- **gradio**: Web app framework
 - **pydantic-ai**: AI agent framework with MCP support
-- **openai**: OpenAI API client
+- **openai**: OpenAI API client (included in pydantic-ai)
 - **pydantic**: Data validation and settings management
 
 ## Contributing
@@ -136,16 +151,15 @@ This project is open source. Please check the license file for details.
 ### Common Issues
 
 1. **Agent won't initialize**: Check that your OpenAI API key is correctly set
-2. **Streaming not working**: Ensure you have a stable internet connection
-3. **MCP server connection fails**: Verify server URL and authentication details
+2. **MCP server connection fails**: Verify server URL and authentication details
+3. **Import errors**: Ensure you're running from the project root directory
 
 ### Environment Setup
 
 For different environments, you can set the API key via:
 
 - **Environment variable**: `export OPENAI_API_KEY="your_key"`
-- **Streamlit secrets**: Create `.streamlit/secrets.toml` with `OPENAI_API_KEY = "your_key"`
-- **Direct configuration**: Modify the `initialize_agent()` function
+- **Direct configuration**: Enter the API key in the Gradio interface
 
 ## Support
 
