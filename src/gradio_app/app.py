@@ -4,7 +4,7 @@ import json
 import atexit
 import signal
 import sys
-from agent import MCP_Agent
+from src.mcp_agent.agent import MCP_Agent
 
 class GradioMCPApp:
     def __init__(self):

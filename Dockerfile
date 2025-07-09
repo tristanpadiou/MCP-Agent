@@ -21,8 +21,8 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy application files
-COPY agent.py .
-COPY app.py .
+COPY src/mcp_agent/agent.py .
+COPY src/gradio_app/app.py .
 
 # Create directories that might be needed
 RUN mkdir -p notebooks
@@ -31,4 +31,4 @@ RUN mkdir -p notebooks
 EXPOSE 7860
 
 # Set the command to run the application
-CMD ["python", "app.py"] 
+CMD ["python", "src/gradio_app/app.py"] 
