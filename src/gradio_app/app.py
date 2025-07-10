@@ -4,7 +4,7 @@ import json
 import atexit
 import signal
 import sys
-from src.mcp_agent.agent import MCP_Agent
+from ..mcp_agent.agent import MCP_Agent
 
 class GradioMCPApp:
     def __init__(self):
@@ -445,10 +445,14 @@ with gr.Blocks(title="MCP Agent Chat", theme=gr.themes.Soft()) as demo:
         outputs=[chatbot, chat_interface, placeholder, init_status]
     )
 
-if __name__ == "__main__":
+def main():
+    """Main entry point for the application"""
     demo.launch(
-        server_name="127.0.0.1",
+        server_name="0.0.0.0",
         server_port=7860,
         share=False,
         show_error=True
     )
+
+if __name__ == "__main__":
+    main()

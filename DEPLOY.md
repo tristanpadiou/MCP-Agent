@@ -68,7 +68,7 @@ If you need to update dependencies:
 
 ```bash
 # Run your application
-uv run python src/gradio_app/app.py
+uv run python -m src.gradio_app.app
 
 # Add new dependencies
 uv add requests

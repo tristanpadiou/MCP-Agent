@@ -37,6 +37,7 @@ Repository = "https://github.com/tristanpadiou/MCP-Agent"
 Issues = "https://github.com/tristanpadiou/MCP-Agentissues"
 
 [tool.uv]
+package = true
 dev-dependencies = [
     "pytest>=7.0.0",
     "black>=23.0.0",
