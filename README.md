@@ -58,7 +58,7 @@ export OPENAI_API_KEY="your_openai_api_key_here"
 
 ```bash
 # Run the app using uv
-uv run python src/gradio_app/app.py
+uv run python -m src.gradio_app.app
 ```
 
 The app will open in your browser at `http://localhost:7860`
