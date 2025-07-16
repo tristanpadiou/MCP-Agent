@@ -61,6 +61,12 @@ export OPENAI_API_KEY="your_openai_api_key_here"
 uv run python -m src.gradio_app.app
 ```
 
+### 3.5. Run the Gradio App locally
+```bash
+#run the app using uv
+uv run python -m src.gradio_app.run_local
+```
+
 The app will open in your browser at `http://localhost:7860`
 
 ## How to Use
@@ -133,7 +139,8 @@ MCP-Agent/
 │   ├── __init__.py
 │   ├── gradio_app/
 │   │   ├── __init__.py
-│   │   └── app.py          # Gradio chatbot frontend
+│   │   ├── app.py          # Gradio chatbot frontend
+│   │   └── run_local.py    # Run gradio locally
 │   └── mcp_agent/
 │       ├── __init__.py
 │       └── agent.py        # Core MCP agent implementation
@@ -141,6 +148,7 @@ MCP-Agent/
 │   └── test.ipynb          # Jupyter notebook for testing
 ├── pyproject.toml         # Project configuration and dependencies
 ├── uv.lock               # Lock file for reproducible builds
+├── config.json           # File containing system prompt
 ├── README.md             # This file
 └── DEPLOY.md             # Deployment instructions
 ```

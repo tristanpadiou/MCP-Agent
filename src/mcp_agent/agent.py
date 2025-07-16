@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pydantic_ai import Agent, RunContext, format_as_xml
+from pydantic_ai import Agent
 
 from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
@@ -9,15 +9,11 @@ from dataclasses import dataclass
 from datetime import datetime
 from pydantic import Field
 import json
+import os
+from pathlib import Path
 from pydantic_ai.messages import (
     ModelMessage,
-    FinalResultEvent,
-    FunctionToolCallEvent,
-    FunctionToolResultEvent,
-    PartDeltaEvent,
-    PartStartEvent,
-    TextPartDelta,
-    ToolCallPartDelta,
+
 )
 
 
@@ -36,7 +32,8 @@ class Message_state:
     
     
 class MCP_Agent:
-    def __init__(self, api_keys:dict, mpc_server_urls:list = [], mpc_stdio_commands:list = []):
+   
+    def __init__(self, api_keys:dict, mpc_server_urls:list = [], mpc_stdio_commands:list = [], instructions:str = None):
         """
         Args:
             
@@ -61,14 +58,23 @@ class MCP_Agent:
                   'args': ['-y', '@modelcontextprotocol/server-memory'] 
                 }
               ]
+            
+            instructions (str, optional): Instructions for the agent. If not provided, 
+                                          defaults to the instructions in the config.json file.
 
             
         """
+        
+        # Load configuration
+        self.instructions = instructions
         
         self.api_keys=Api_keys(api_keys=api_keys)
         
         self.mpc_server_urls = mpc_server_urls
         self.mpc_stdio_commands = mpc_stdio_commands
+        
+    
+        
         # tools
         self.llms={'mcp_llm':OpenAIModel('gpt-4.1-mini',provider=OpenAIProvider(api_key=self.api_keys.api_keys['openai_api_key']))}
         
@@ -93,8 +99,7 @@ class MCP_Agent:
         self._is_connected = False
         #agent
 
-        self.agent=Agent(self.llms['mcp_llm'],tools=[], mcp_servers=self.mpc_servers, instructions="you are a helpful assistant that can help with a wide range of tasks,\
-                          you have the current time and the user query, you can use the tools provided to you if necessary to help the user with their queries, ask how you can help the user, sometimes the user will ask you not to use the tools, in this case you should not use the tools")
+        self.agent=Agent(self.llms['mcp_llm'],tools=[], mcp_servers=self.mpc_servers, instructions=self.instructions)
         self.memory=Message_state(messages=[])
         
     
@@ -119,45 +124,7 @@ class MCP_Agent:
 
         This function enables interaction with the user through various types of input.
 
-        ## Parameters
-
-        - `query`: The input to process. Can be one of the following types:
-        - String: Direct text input passed to the agent
-        - Binary content: Special format for media files (see below)
-
-        ## Binary Content Types
-
-        The function supports different types of media through `BinaryContent` objects:
-
-        ### Audio
-        ```python
-        agent.chat([
-            'optional string message',
-            BinaryContent(data=audio, media_type='audio/wav')
-        ])
-        ```
-
-        ### PDF Files
-        ```python
-        agent.chat([
-            'optional string message',
-            BinaryContent(data=pdf_path.read_bytes(), media_type='application/pdf')
-        ])
-        ```
-
-        ### Images
-        ```python
-        agent.chat([
-            'optional string message',
-            BinaryContent(data=image_response.content, media_type='image/png')
-        ])
-        ```
-
-        ## Returns
-
-        - `Agent_output`: as a pydantic object, the ui_version and voice_version are the two fields of the object
-
-        ## Extra Notes
+        
         The message_history of Agent can be accessed using the following code:
         ```python
         

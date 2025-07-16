@@ -4,7 +4,37 @@ import json
 import atexit
 import signal
 import sys
-from ..mcp_agent.agent import MCP_Agent
+from src.mcp_agent.agent import MCP_Agent
+from pathlib import Path
+from datetime import datetime
+
+# Get the path to the config.json file to initialize the agent
+config_file_path = Path(__file__).parent.parent.parent / "config.json"
+
+def load_config(config_file_path: str = None) -> dict:
+    """Load configuration from JSON file"""
+    if config_file_path is None:
+        # Default to config.json in the project root
+        config_file_path = Path(__file__).parent.parent.parent / "config.json"
+    
+    try:
+        with open(config_file_path, 'r') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        # Return default config if file not found
+        return {
+            "agent_config": {
+                "instructions": "You are a helpful assistant that can help with a wide range of tasks. You have the current time and the user query, you can use the tools provided to you if necessary to help the user with their queries. Ask how you can help the user. Sometimes the user will ask you not to use the tools, in this case you should not use the tools.",
+                "model_settings": {
+                    "temperature": 0.7,
+                    "max_tokens": 1000
+                }
+            },
+            "mcp_servers": {
+                "default_timeout": 30,
+                "retry_attempts": 3
+            }
+        }
 
 class GradioMCPApp:
     def __init__(self):
@@ -48,7 +78,7 @@ class GradioMCPApp:
             
             # Initialize agent
             api_keys = {'openai_api_key': openai_api_key}
-            self.agent = MCP_Agent(api_keys=api_keys, mpc_server_urls=mcp_servers)
+            self.agent = MCP_Agent(api_keys=api_keys, mpc_server_urls=mcp_servers, instructions=load_config(config_file_path)['agent_config']['instructions'])
             
             # Connect to MCP servers
             await self.agent.connect()
@@ -72,7 +102,7 @@ class GradioMCPApp:
         
         try:
             # Get response from agent
-            response = await self.agent.chat(message.strip())
+            response = await self.agent.chat(message.strip()+f" The current time is {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
             
             # Update chat history
             self.chat_history.append([message.strip(), str(response)])
@@ -445,12 +475,12 @@ with gr.Blocks(title="MCP Agent Chat", theme=gr.themes.Soft()) as demo:
         outputs=[chatbot, chat_interface, placeholder, init_status]
     )
 
-def main():
+def main(server_name:str = "0.0.0.0", server_port:int = 7860, share:bool = False):
     """Main entry point for the application"""
     demo.launch(
-        server_name="0.0.0.0",
-        server_port=7860,
-        share=False,
+        server_name=server_name,
+        server_port=server_port,
+        share=share,
         show_error=True
     )
 
